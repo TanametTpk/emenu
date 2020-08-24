@@ -4,47 +4,31 @@ import ProductList from '../components/ProductList'
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import MenuApi from '../api/menu'
+import Api from '../api/menu'
 import {
     useHistory
   } from "react-router-dom";
-import menu from '../api/menu'
-
-let menus = [
-    {
-        _id: "1",
-        name: "ข้าว",
-        price: 10,
-        photo: "https://www.cpbrandsite.com/contents/tips_tricks/wkkwia2eay945al9mxxirlwhyrx99jsbljdbstkq.png"
-    },
-    {
-        _id: "2",
-        name: "ปลากระพงทอดน้ำปลา",
-        price: 390,
-        photo: "https://img.wongnai.com/p/256x256/2019/03/10/6e25c3f56edf4ad2bcdfff3d280403d9.jpg"
-    }
-]
 
 const Home = (props) => {
 
     let [userId, setUserId] = useState("")
     let [products, setProducts] = useState([])
+    let [orders, setOrders] = useState([])
+    let [ openMenu, setOpenMenu ] = useState(false)
     const history = useHistory()
     const parsed = queryString.parse(props.location.search.substring(1));
     const {zone, businessId} = parsed;
-    console.log(parsed);
-
-    // if (!(zone && businessId)) {
-    //     history.push("/notfound")
-    // }
 
     useEffect(() => {
 
         const fetchProduct = async () => {
-            // let products = await MenuApi.getProducts(businessId, zone, userId);
-            // console.log(products);
-            // setProducts(products)
-            setProducts(menus)
+            let products = await Api.getProducts(businessId, zone, userId);
+            setProducts(products)
+        }
+
+        const fetchOrder = async () => {
+            let orders = await Api.getOrders(businessId, zone, userId, "incart");
+            setOrders(orders)
         }
 
         let userId = localStorage.getItem("userId")
@@ -54,14 +38,70 @@ const Home = (props) => {
 
         setUserId(userId)
         fetchProduct()
+        fetchOrder()
 
     }, []);
 
+    const onAddOrder = async (product) => {
+        let remoteOrder = await Api.addOrder(businessId, zone, userId, product._id, 1)
+        let order = orders.find(o => o._id === remoteOrder._id)
+        if (!order) {
+            setOrders([
+                ...orders,
+                remoteOrder
+            ])
+            return
+        }
+
+        setOrders(orders.map(o => {
+            if (o._id === order._id) {
+                return remoteOrder
+            }
+            return o
+        }))
+    }
+
+    const onRemoveOrder = async (product) => {
+        let order = orders.find(o => o.product === product._id)
+        if (!order) return
+        else{
+            await Api.removeOrCancelOrder(businessId, zone, userId, order._id)
+        }
+
+        order.quantity -= 1
+        setOrders(
+            orders.map(o => {
+                if (o.product === order.product._id) {
+                    return order
+                }
+                return o
+            }).filter(o => o.quantity > 0)
+        )
+    }
+
+    const sendOrder = async() => {
+        await Api.placeOrders(businessId, zone, userId);
+        let orders = await Api.getOrders(businessId, zone, userId, "incart")
+        setOrders(orders)
+    }
+
     return (
         <div>
-            <div style={{height:"94vh"}}>
-                <ProductList products={products} />
-            </div>
+            {
+                !openMenu ?
+                    <div style={{height:"94vh", overflowY:"scroll"}}>
+                        <ProductList
+                            products={products} 
+                            onAdd={onAddOrder}
+                            onRemove={onRemoveOrder}
+                            orders={orders}
+                        />
+                    </div>
+                :
+                    <div style={{height:"94vh", overflowY:"scroll"}}>
+                        orders
+                    </div>
+            }
 
             <AppBar position="fixed" style={{bottom:0, top: "auto", backgroundColor: "white"}}>
                 <Grid
@@ -72,7 +112,8 @@ const Home = (props) => {
                     <Grid item xs={6}>
                         <Button
                             color="primary" 
-                            style={{height:"100%", width:"100%"}}
+                            style={{height:"100%", width:"100%", backgroundColor: openMenu ? "lightGray" : ""}}
+                            onClick={() => setOpenMenu(!openMenu)}
                         >
                                 ดูรายการอาหารที่สั่ง
                         </Button>
@@ -82,6 +123,7 @@ const Home = (props) => {
                         <Button
                             color="primary" 
                             style={{height:"100%", width:"100%"}}
+                            onClick={sendOrder}
                         >
                                 สั่งอาหาร
                         </Button>
