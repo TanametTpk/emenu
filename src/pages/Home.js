@@ -27,15 +27,16 @@ let menus = [
 
 const Home = (props) => {
 
+    let [userId, setUserId] = useState("")
     let [products, setProducts] = useState([])
     const history = useHistory()
     const parsed = queryString.parse(props.location.search.substring(1));
-    const {zone, businessId, userId} = parsed;
-    const notLogin = !userId && zone && businessId
+    const {zone, businessId} = parsed;
+    console.log(parsed);
 
-    if (!(zone && businessId)) {
-        history.push("/notfound")
-    }
+    // if (!(zone && businessId)) {
+    //     history.push("/notfound")
+    // }
 
     useEffect(() => {
 
@@ -45,7 +46,13 @@ const Home = (props) => {
             // setProducts(products)
             setProducts(menus)
         }
-        
+
+        let userId = localStorage.getItem("userId")
+        if (!userId) {
+            history.push(`/login?businessId=${businessId}&zone=${zone}`)
+        }
+
+        setUserId(userId)
         fetchProduct()
 
     }, []);

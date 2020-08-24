@@ -38,6 +38,16 @@ export default {
     checkBill: async (business, groupID, userID) => {
         let res = await axios.post(`${MENU_URL}/bills/${createQuery(business, groupID, userID)}`);
         return res.data
+    },
+
+    addUser: async (name) => {
+        let res = await axios.post(`${config.SERVER}/users`, {name})
+        return res.data
+    },
+
+    getUser: async (userId) => {
+        let res = await axios.get(`${config.SERVER}/users/${userId}`)
+        return res.data
     }
 
 }
