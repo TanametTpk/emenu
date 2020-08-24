@@ -5,11 +5,13 @@ import {
   Route,
 } from "react-router-dom";
 import HomePage from './pages/Home';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <Router>
       <Route path="/" exact component={HomePage} />
+      <Route path="/notfound" exact component={NotFound} />
     </Router>
   );
 }
