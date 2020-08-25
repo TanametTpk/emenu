@@ -12,8 +12,11 @@ import NotFound from './pages/NotFound';
 function App() {
   return (
     <Router>
+      <Switch>
         <Route path="/" exact component={HomePage} />
-        <Route path="/emenu/login" exect component={LoginPage} />
+        <Route path="/login" exect component={LoginPage} />
+        <Route component={NotFound} />
+      </Switch>
     </Router>
   );
 }

@@ -98,22 +98,22 @@ const Home = (props) => {
             setBilling(billing)
         }
 
-        if (!zone && !businessId) {
-            history.push(`/notfound`)
-            return
-        }
+        // if (!zone && !businessId) {
+        //     history.push(`/notfound`)
+        //     return
+        // }
 
-        let userId = localStorage.getItem("userId")
-        console.log("userid", userId);
-        if (!userId) {
-            history.push(`/emenu/login?businessId=${businessId}&zone=${zone}`)
-            return
-        }
+        // let userId = localStorage.getItem("userId")
+        // console.log("userid", userId);
+        // if (!userId) {
+        //     history.push(`/emenu/login?businessId=${businessId}&zone=${zone}`)
+        //     return
+        // }
 
-        setUserId(userId)
-        fetchProduct()
-        fetchOrder()
-        fetchBilling()
+        // setUserId(userId)
+        // fetchProduct()
+        // fetchOrder()
+        // fetchBilling()
 
     }, []);
 
