@@ -69,7 +69,7 @@ const User = (props) => {
     }
 
     const navigateToMenu = () => {
-        history.push(`/?businessId=${businessId}&zone=${zone}`)
+        history.push(`/emenu/?businessId=${businessId}&zone=${zone}`)
     }
 
     return (
