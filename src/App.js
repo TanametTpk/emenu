@@ -14,7 +14,7 @@ function App() {
     <Router>
       <Switch>
         <Route path="/" exact component={HomePage} />
-        <Route path="/login" exect component={LoginPage} />
+        <Route path="/emenu/login" exect component={LoginPage} />
         {/* <Route component={NotFound} /> */}
       </Switch>
     </Router>
