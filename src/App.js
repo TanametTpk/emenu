@@ -13,9 +13,9 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/emenu/" exact component={HomePage} />
-        <Route path="/emenu/login" exect component={LoginPage} />
-        <Route component={NotFound} />
+        <Route path="/" exact component={HomePage} />
+        <Route path="/login" exect component={LoginPage} />
+        {/* <Route component={NotFound} /> */}
       </Switch>
     </Router>
   );
