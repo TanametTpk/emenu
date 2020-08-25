@@ -98,24 +98,36 @@ const Home = (props) => {
             setBilling(billing)
         }
 
-        // if (!zone && !businessId) {
-        //     history.push(`/notfound`)
-        //     return
-        // }
+        if (!zone && !businessId) {
+            history.push(`/notfound`)
+            return
+        }
 
-        // let userId = localStorage.getItem("userId")
-        // console.log("userid", userId);
-        // if (!userId) {
-        //     history.push(`/emenu/login?businessId=${businessId}&zone=${zone}`)
-        //     return
-        // }
+        let userId = localStorage.getItem("userId")
+        if (!userId) {
+            loginWithRandomName()
+            return
+        }
 
-        // setUserId(userId)
-        // fetchProduct()
-        // fetchOrder()
-        // fetchBilling()
+        setUserId(userId)
+        fetchProduct()
+        fetchOrder()
+        fetchBilling()
 
     }, []);
+
+    const randomName = () => {
+        return `user-${Math.floor(Math.random()*10000)}`
+     }
+ 
+     const login = async (username) => {
+         let user = await Api.addUser(username);
+         localStorage.setItem("userId", user._id)
+     }
+
+     const loginWithRandomName = () => {
+         login(randomName())
+     }
 
     const fetchOrder = async () => {
         let orders = await Api.getOrders(businessId, zone, userId, "incart");
