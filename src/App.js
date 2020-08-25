@@ -13,9 +13,9 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/" exact component={HomePage} />
+        <Route component={HomePage} />
         <Route path="/login" exect component={LoginPage} />
-        <Route component={NotFound} />
+        {/* <Route component={NotFound} /> */}
       </Switch>
     </Router>
   );
