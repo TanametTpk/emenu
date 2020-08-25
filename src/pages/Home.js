@@ -104,6 +104,7 @@ const Home = (props) => {
         }
 
         let userId = localStorage.getItem("userId")
+        console.log("userid", userId);
         if (!userId) {
             history.push(`/emenu/login?businessId=${businessId}&zone=${zone}`)
             return
