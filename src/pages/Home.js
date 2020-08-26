@@ -21,6 +21,7 @@ import {
 } from '../api/socket'
 import Backdrop from '@material-ui/core/Backdrop';
 import Paper from '@material-ui/core/Paper';
+import Search from '../components/Search';
 
 const Home = (props) => {
 
@@ -33,6 +34,7 @@ const Home = (props) => {
     const parsed = queryString.parse(props.location.search.substring(1));
     const {zone, businessId} = parsed;
     const [isCheckBill, setCheckBill] = useState(false);
+    const [search, setSearch] = useState("")
 
     const closeAlert = () => {
         setCheckBill(false);
@@ -192,9 +194,23 @@ const Home = (props) => {
         <div>
             {
                 !openMenu ?
-                    <div style={{height:"94vh", overflowY:"scroll"}}>
+                    <Search
+                        value={search}
+                        onChange={({target:{value}}) => setSearch(value)}
+                    />
+                :
+                    null
+            }
+            {
+                !openMenu ?
+                    <div style={{height:"87vh", overflowY:"scroll"}}>
                         <ProductList
-                            products={products} 
+                            products={
+                                search ?
+                                    products.filter(product => product.name.includes(search))
+                                :
+                                    products
+                            } 
                             onAdd={onAddOrder}
                             onRemove={onRemoveOrder}
                             orders={orders}
